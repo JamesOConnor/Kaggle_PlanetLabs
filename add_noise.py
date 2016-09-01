@@ -14,3 +14,4 @@ x = x / np.max(x);
 v = np.var(x) / (10**(snr/10));
 x_noise=(noi.random_noise(x, mode='gaussian', mean=0, var=v)*255).astype(np.uint8)
 cv2.imwrite('%s'%(infile.replace('.JPG', '_noisy.JPG')), x_noise)
+#
