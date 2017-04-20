@@ -36,7 +36,6 @@ for n,i in enumerate(train_labels):
 mean_all = np.r_['1,2,0', mean_green, mean_red, mean_blue, std_green, std_red, std_blue].astype(float)
 mean_green = mean_green.reshape(1,-1).T
 
-lr = lm.LogisticRegression()
 rf = es.RandomForestClassifier()
 
 rf.fit(mean_all, train_mapped_to_class_ids)
