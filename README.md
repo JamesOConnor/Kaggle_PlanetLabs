@@ -1,1 +1,1 @@
-A collection of scripts for image processing in python with various dependancies
+Python script collections for competing in Planet Labs' Kaggle competition
