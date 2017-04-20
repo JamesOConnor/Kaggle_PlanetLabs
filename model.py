@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import pandas as pd
 import glob
 import sklearn.linear_model as lm
 import sklearn.ensemble as es
@@ -71,4 +70,4 @@ for n,i in enumerate(fns):
     print n
     out_formatted.append([i.split('\\')[1].split('.')[0], classes[output_classes[n]]])
 
-f = 1
+np.savetxt('for_upload.csv', out_formatted, delimiter=',', fmt='%s')
