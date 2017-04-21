@@ -21,12 +21,12 @@ train_labels = train[1:,1]
 
 for i in range(len(train[1:])):
     im = cv2.imread('train-jpg/train_%s.jpg'%(int(i)))
-    mean_green[i] = float(im[:, 1].mean())
-    mean_red[i] = float(im[:, 0].mean())
-    mean_blue[i] = float(im[:, 2].mean())
-    std_green[i] = float(im[:, 1].std())
-    std_red[i] = float(im[:, 0].std())
-    std_blue[i] = float(im[:, 2].std())
+    mean_green[i] = float(im[:, :,1].mean())
+    mean_red[i] = float(im[:, :,0].mean())
+    mean_blue[i] = float(im[:, :,2].mean())
+    std_green[i] = float(im[:, :,1].std())
+    std_red[i] = float(im[:, :,0].std())
+    std_blue[i] = float(im[:, :,2].std())
 
 for n,i in enumerate(train_labels):
     ind = int(np.where(classes==i)[0])
@@ -52,12 +52,12 @@ std_blue_test = np.zeros((len(fns)))
 for i,fn in enumerate(fns):
     print i
     im = cv2.imread(fn)
-    mean_green_test[i] = float(im[:, 1].mean())
-    mean_red_test[i] = float(im[:, 0].mean())
-    mean_blue_test[i] = float(im[:, 2].mean())
-    std_green_test[i] = float(im[:, 1].std())
-    std_red_test[i] = float(im[:, 0].std())
-    std_blue_test[i] = float(im[:, 2].std())
+    mean_green_test[i] = float(im[:, :,1].mean())
+    mean_red_test[i] = float(im[:, :,0].mean())
+    mean_blue_test[i] = float(im[:, :,2].mean())
+    std_green_test[i] = float(im[:, :,1].std())
+    std_red_test[i] = float(im[:, :,0].std())
+    std_blue_test[i] = float(im[:, :,2].std())
 
 mean_all_test = np.r_['1,2,0', mean_green_test, mean_red_test, mean_blue_test, std_green_test, std_red_test, std_blue_test].astype(float)
 output_classes = rf.predict(mean_all_test)
