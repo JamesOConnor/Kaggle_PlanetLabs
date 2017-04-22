@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def calc_fft():
     '''
     Calculates and returns the power spectra of each image band, see ref Torralba, 2003 - Statistics of natural image
