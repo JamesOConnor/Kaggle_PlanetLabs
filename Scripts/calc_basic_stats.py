@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-def calc_haralick():
+def calc_basic_stats():
     '''
   Calculates and returns basic stats for all bands using numpy
   '''
