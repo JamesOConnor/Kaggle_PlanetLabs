@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import mahotas as mh
 
-def calc_haralick():
+def calc_basic_stats():
   '''
   Calculates and returns basic stats for all bands using numpy
   '''
