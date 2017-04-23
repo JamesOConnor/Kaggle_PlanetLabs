@@ -1,0 +1,24 @@
+Notes
+
+20/04/2017
+First pass involved generating some basic stats (mean, std) per image, and training a Random Forest (RF) model with each unique class as the target vector.
+Objective score from Kaggle was ~.75
+
+Scripts:
+calc_basic_stats.py
+
+21/04/2017
+Added power spectra mean+std and counts of features in each image band (ORB, SIFT, SURF) to the RF xvector
+Objective score ~.83
+
+Scripts:
+calc_fft.py
+calc_feats.py
+
+22/04/2017
+Added flattened haralick features (14/per direction/per channel) and added to the xvector and into RF xvector
+Objective score ~.83
+
+23/04/2017
+Trained first basic CNN overnight. Probabilities of tags were converted to tags using an arbitrary threshold (.2)
+Objective score = .85
