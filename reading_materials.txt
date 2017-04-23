@@ -1,0 +1,8 @@
+[fft, power spectra, image stats]
+Torralba, Antonio, and Aude Oliva. "Statistics of natural image categories." Network: computation in neural systems 14.3 (2003): 391-412.
+
+[CNN training]
+https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html
+
+[Satellite mapping, fft]
+Cracknell, A. P. "Review article Synergy in remote sensing-what's in a pixel?." International Journal of Remote Sensing 19.11 (1998): 2025-2047.
