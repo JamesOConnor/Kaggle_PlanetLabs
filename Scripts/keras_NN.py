@@ -51,8 +51,7 @@ model.compile(loss='binary_crossentropy',
 model.fit(x_train, y_train,
           batch_size=128,
           epochs=5,
-          verbose=1,
-          validation_data=(x_valid, y_valid))
+          verbose=1)
 
 fns = glob.glob('test-jpg/*.jpg')
 x_test = []
