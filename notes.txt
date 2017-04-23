@@ -19,6 +19,18 @@ calc_feats.py
 Added flattened haralick features (14/per direction/per channel) and added to the xvector and into RF xvector
 Objective score ~.83
 
+Scripts:
+calc_haralick.py
+
 23/04/2017
 Trained first basic CNN overnight. Probabilities of tags were converted to tags using an arbitrary threshold (.2)
 Objective score = .85
+
+Scripts:
+karas_NN.py
+
+
+#Ideas#
+Converting NN probabilities to binary tags an issue - Need to devise a logical way of splitting individually based on frequency
+Stacking models so that we do quick checks of the outputted classes from CNNs
+Building a larger CNN, with uncompressed inputs and 2 more layers of 2D convs
