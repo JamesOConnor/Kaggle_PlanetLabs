@@ -5,7 +5,7 @@ import glob as glob
 train = pd.read_csv('train.csv')
 fns = glob.glob('test-jpg/*.jpg')
 flatten = lambda l: [item for sublist in l for item in sublist]
-labels = list(set(flatten([l.split(' ') for l in df_train['tags'].values])))
+labels = list(set(flatten([l.split(' ') for l in train['tags'].values])))
 labels = np.array(labels)
 
 def oh_to_labs(oh_array):
