@@ -12,7 +12,7 @@ train_labels = train[1:,1]
 for n,i in enumerate(train_labels):
     ind = int(np.where(classes==i)[0])
     train_mapped_to_class_ids[n] = ind
-    print n
+    print(n)
 train_mapped_to_class_ids = train_mapped_to_class_ids.astype(int)
 
 current_run = True
@@ -26,7 +26,7 @@ if current_run == False:
     surf_det = cv2.SURF()
 
     for i in range(len(train[1:])):
-        print i
+        print(i)
         im = cv2.imread('train-jpg/train_%s.jpg'%(int(i)))
         for band in range(3):
             xvec[i,band] =  float(im[:, :, band].mean())
@@ -37,7 +37,6 @@ if current_run == False:
             xvec[i, band + 12] = len(orb_det.detect(im[:, :, band]))
             xvec[i, band + 15] = len(sift_det.detect(im[:, :, band]))
             xvec[i, band + 18] = len(surf_det.detect(im[:, :, band]))
-
 
     feats_all = np.r_['1,2,0', surf_feats_blue,surf_feats_red,surf_feats_green,orb_feats_blue,orb_feats_red,orb_feats_green, \
                  sift_feats_green, sift_feats_blue, sift_feats_red]

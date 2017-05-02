@@ -37,19 +37,36 @@ def calc_img_hist_stats(im):
     return r_hist + g_hist + b_hist
 
 
-def calc_img_haralick(im):
+def calc_img_haralick(im, bins=32):
     """
     Calculates haralick features for RGB input image
+    Linearly quantizes input image to 'bins'. 
+    Averages haralick features across 4 directions.
     :param im: 
     :return: list of RGB haralick features 
     """
 
-    # Summed and averaged because we're not hooligans
-    R_feats = sum(mh.features.haralick(im[:,:,0]))/4
-    G_feats = sum(mh.features.haralick(im[:,:,1]))/4
-    B_feats = sum(mh.features.haralick(im[:,:,2]))/4
+    r_feats = mh.features.haralick(mh.stretch(im[:,:,0], 0, bins), return_mean=True)
+    g_feats = mh.features.haralick(mh.stretch(im[:,:,1], 0, bins), return_mean=True)
+    b_feats = mh.features.haralick(mh.stretch(im[:,:,2], 0, bins), return_mean=True)
 
-    return R_feats + G_feats + B_feats
+    return r_feats.tolist() + g_feats.tolist() + b_feats.tolist()
+
+
+def calc_img_NDVI(im):
+    """
+    Calculates Normalized Difference Vegetation Index (NVDI) from input image
+    Input image must be the TIF image with 4 channels
+    :param im: 
+    :return: list of NVDI histogram features 
+    """
+
+    I = im.astype(int)  # integer overflow when summing channels with dtype=uint8
+
+    nvdi = (I[:, :, 0] - I[:, :, 3]) / (I[:, :, 0] - I[:, :, 3])
+    nvdi_stats = calc_hist_stats(nvdi.flatten())
+
+    return nvdi_stats
 
 
 def get_haralick_labels():
@@ -67,3 +84,9 @@ def get_colour_stats_labels():
     return ['R_min', 'R_mean', 'R_median', 'R_max', 'R_std', 'R_energy', 'R_entropy', 'R_skewness', 'R_kurtosis',
             'G_min', 'G_mean', 'G_median', 'G_max', 'G_std', 'G_energy', 'G_entropy', 'G_skewness', 'G_kurtosis',
             'B_min', 'B_mean', 'B_median', 'B_max', 'B_std', 'B_energy', 'B_entropy', 'B_skewness', 'B_kurtosis']
+
+
+def get_nvdi_stats_labels():
+
+    return ['NDVI_min', 'NDVI_mean', 'NDVI_median', 'NDVI_max', 'NDVI_std', 'NDVI_energy', 'NDVI_entropy', 'NDVI_skewness', 'NDVI_kurtosis']
+

@@ -7,6 +7,9 @@ def calc_fft():
     Calculates and returns the power spectra of each image band, see ref Torralba, 2003 - Statistics of natural image
     categories
     '''
+
+    train = np.loadtxt('train.csv', delimiter=',', dtype=str)
+
     mean_fft_green = np.zeros_like(train[1:, 0])
     mean_fft_red = np.zeros_like(train[1:, 0])
     mean_fft_blue = np.zeros_like(train[1:, 0])
@@ -16,7 +19,7 @@ def calc_fft():
 
     for i in range(len(train[1:])):
         if i % 50 == 0:
-            print i
+            print(i)
         im = cv2.imread('train-jpg/train_%s.jpg' % (int(i)))
         greenfft = abs(np.fft.fftshift(np.fft.fft2(im[:, :, 1])))
         redfft = abs(np.fft.fftshift(np.fft.fft2(im[:, :, 0])))

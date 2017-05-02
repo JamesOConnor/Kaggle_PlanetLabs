@@ -31,7 +31,7 @@ for i in range(len(train[1:])):
 for n,i in enumerate(train_labels):
     ind = int(np.where(classes==i)[0])
     train_mapped_to_class_ids[n] = ind
-    print n
+    print(n)
 
 mean_all = np.r_['1,2,0', mean_green, mean_red, mean_blue, std_green, std_red, std_blue].astype(float)
 mean_green = mean_green.reshape(1,-1).T
@@ -50,7 +50,7 @@ std_red_test = np.zeros((len(fns)))
 std_blue_test = np.zeros((len(fns)))
 
 for i,fn in enumerate(fns):
-    print i
+    print(i)
     im = cv2.imread(fn)
     mean_green_test[i] = float(im[:, :,1].mean())
     mean_red_test[i] = float(im[:, :,0].mean())
@@ -66,7 +66,7 @@ out_formatted = []
 out_formatted.append(['image_name', 'tags'])
 
 for n,i in enumerate(fns):
-    print n
+    print(n)
     out_formatted.append([i.split('\\')[1].split('.')[0], classes[output_classes[n]]])
 
 np.savetxt('for_upload.csv', out_formatted, delimiter=',', fmt='%s')
