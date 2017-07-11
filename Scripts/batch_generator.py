@@ -7,7 +7,7 @@ from keras.utils import np_utils
 
 # Creates a batch generator for training images ..
 
-def batch_generator(batch_size=128):
+def image_batch_generator(batch_size=128):
 
     # Read label file and generate label_map
     train = pd.read_csv('train.csv')
@@ -25,8 +25,10 @@ def batch_generator(batch_size=128):
 
         for idx, row in enumerate(train.values):
 
-            img = cv2.imread('../../train-jpg/{}.jpg'.format(idx))
-            img = cv2.resize(img, 128, 128)
+            filepath = '../../train-jpg/train_{}.jpg'.format(idx)
+
+            img = cv2.imread(filepath)
+            img = cv2.resize(img, (128, 128))
             tags = row[1]
             targets = np.zeros(17)
             for t in tags.split(' '):
