@@ -16,8 +16,11 @@ def oh_to_labs(oh_array):
     :param oh_array: array with binary values representing tags
     :return: array to be written to file
     '''
+
     train = pd.read_csv('train.csv')
+
     fns = glob.glob('test-jpg/*.jpg')
+
     flatten = lambda l: [item for sublist in l for item in sublist]
     labels = list(set(flatten([l.split(' ') for l in train['tags'].values])))
     labels.sort()

@@ -1,3 +1,5 @@
+from keras import Sequential, Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+
 def sample_arch(im_size):
     model = Sequential()
 

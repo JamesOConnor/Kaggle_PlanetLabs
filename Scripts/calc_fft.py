@@ -30,4 +30,5 @@ def calc_fft():
         std_fft_green[i] = greenfft.std()
         std_fft_red[i] = redfft.std()
         std_fft_blue[i] = bluefft.std()
+
     return np.r_['1,2,0', mean_fft_green, mean_fft_red, mean_fft_blue, std_fft_green, std_fft_red, std_fft_blue]

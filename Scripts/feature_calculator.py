@@ -2,7 +2,6 @@ import numpy as np
 import scipy as sp, scipy.stats as sps
 import mahotas as mh
 
-
 def calc_hist_stats(X):
     """
     Calculates histogram statistics on 1-D input array X.  

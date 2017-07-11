@@ -6,7 +6,6 @@ from sklearn.preprocessing import MultiLabelBinarizer
 import time
 import pickle
 
-
 def run_pretrained_model(config):
 
     # Read config parameters
@@ -123,8 +122,6 @@ def map_classes_to_label(tags):
     # pd.get_dummies('...')
 
     # for index, tag in enumerate(unique_tags):
-
-
 
     mlb = MultiLabelBinarizer(tagsL)
 

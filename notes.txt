@@ -29,7 +29,6 @@ Objective score = .85
 Scripts:
 karas_NN.py
 
-
 #Ideas#
 Converting NN probabilities to binary tags an issue - Need to devise a logical way of splitting individually based on frequency
 Stacking models so that we do quick checks of the outputted classes from CNNs
