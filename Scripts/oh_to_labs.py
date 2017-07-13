@@ -14,6 +14,7 @@ def oh_to_labs(oh_array):
     :param oh_array: array with binary values representing tags
     :return: array to be written to file
     '''
+
     out_formatted = []
     out_formatted.append(['image_name', 'tags'])
     for n,i in enumerate(fns):
