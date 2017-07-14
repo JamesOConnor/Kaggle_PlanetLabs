@@ -1,27 +1,22 @@
-import numpy as np
-import pandas as pd
-import tensorflow as tf
-import cv2
-from tqdm import tqdm
-import glob
-import time
-
 import os.path
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from oh_to_labs import *
 
-from batch_generator import *
-from sklearn.metrics import fbeta_score
-from sklearn.model_selection import train_test_split
-
+import tensorflow as tf
 from keras.models import Sequential, load_model
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from keras.optimizers import Adam, Nadam
 from keras.callbacks import Callback, EarlyStopping
+from batch_generator import *
 
-
-
+from sklearn.metrics import fbeta_score
+from sklearn.model_selection import train_test_split
+import numpy as np
+import pandas as pd
+import glob
+import cv2
+from tqdm import tqdm
+import time
 
 class LossHistory(Callback):
     def __init__(self):
@@ -33,16 +28,14 @@ class LossHistory(Callback):
         self.train_losses.append(logs.get('loss'))
         self.val_losses.append(logs.get('val_loss'))
 
-def get_model():
+def get_model(image_size=(32,32), image_channels=3):
 
-    img_size = (32, 32)
-    img_channels = 3
-    output_size = 17
+    output_size = 17 # I guess this doesn't change that much
 
     model = Sequential()
 
     model.add(Conv2D(128,
-                     input_shape=(*img_size, img_channels),
+                     input_shape=(*image_size, image_channels),
                      kernel_size=(5, 5),
                      kernel_initializer='random_uniform',
                      bias_initializer='zeros',
@@ -82,6 +75,46 @@ def get_model():
 
     return model
 
+def vgg16_model(image_size=(32,32), image_channels=3):
+
+    output_size = 17
+    model = Sequential()
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=(*image_size, image_channels)))
+    #model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool'))
+
+    # Block 2
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'))
+    #model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool'))
+
+    # Block 3
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'))
+    #model.add( Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'))
+    model.add(Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'))
+
+    # Block 4
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'))
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'))
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3'))
+    # model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool'))
+    #
+    # # Block 5
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'))
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'))
+    # model.add(Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3'))
+    # model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'))
+
+    model.add(Flatten(name='flatten'))
+    model.add(Dense(256, activation='relu', name='fc1'))
+    model.add(Dense(256, activation='relu', name='fc2'))
+    model.add(Dense(output_size, activation='sigmoid', name='predictions'))
+	
+    return model
+
+
 def get_amz_model(image_size=(32,32), image_channels=3):
 
     output_size = 17 # I guess this doesn't change that much
@@ -110,10 +143,8 @@ def get_amz_model(image_size=(32,32), image_channels=3):
     model.add(MaxPooling2D(pool_size=2))
     model.add(Dropout(0.25))
 
-    # def add_flatten_layer(self):
     model.add(Flatten())
 
-    # def add_ann_layer(self, output_size):
     model.add(Dense(512, activation='relu'))
     model.add(BatchNormalization())
     model.add(Dropout(0.5))
@@ -122,48 +153,62 @@ def get_amz_model(image_size=(32,32), image_channels=3):
     return model
 
 
-def oh_to_labs(oh_array, train, test):
+def predictions_to_submissions(predictions, labels, test):
     '''
     Converts outputs from CNNs to file formatted for submission to Kaggle
     :param oh_array: array with binary values representing tags
     :return: array to be written to file
     '''
 
-    # TODO: Niceify
-    # Todo: Why does the output get returned in a weird order? 0,1,10,100,1000, etc ..
-    flatten = lambda l: [item for sublist in l for item in sublist]
-    labels = list(set(flatten([l.split(' ') for l in train['tags'].values])))
-    labels = np.array(labels)
-
     out_formatted = []
-    out_formatted.append(['image_name', 'tags'])
-    for n,i in enumerate(test):
-        tags = np.where(oh_array[n]==1)[0]
-        final_tags = ' '.join(labels[tags])
-        out_formatted.append([i.split('\\')[1].split('.')[0], final_tags])
 
-    return np.array(out_formatted)
+    for index, image_name in enumerate(test.image_name):
+
+        tags_index = np.where(predictions[index]==1)[0]
+
+        tags = ' '.join(labels[tags_index])
+
+        out_formatted.append([image_name, tags])
+
+    return pd.DataFrame(out_formatted, columns=['image_name', 'tags'])
+
+
+def process_predictions(predictions, labels, prediction_threshold):
+
+	# TODO: 
 
 
 if __name__ == '__main__':
 
     # Get train and test filepaths
     train = pd.read_csv('train.csv')
-    test = glob.glob('../../test-jpg/*.jpg')
+    test = pd.read_csv('test.csv')
 
-    # Some training options
-    num_epochs = 5
-    batch_size = 12
+    # Training options
+    num_epochs = 1
+    batch_size = 24
     verbosity_level = 1
     image_size = (128,128) # inits tensor shapes as well as opencv resize in batch generators
     image_channels = 3
+
+    # Image augmentation options
+    image_augment_multiplier = 1 # goes over training set twice (with random flips and rotations) * this value
+    horizontal_flip = True
+    vertical_flip = True
+    random_rotate = True
+
+    # Other options
     prediction_threshold = 0.2 # for calling a spade a spade
     fun_loss = 'binary_crossentropy'    # We NEED binary here, since categorical_crossentropy l1 norms the output before calculating loss.
     cool_optimizer = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)     # Adam optimizer with nesterov momentum
 
+    flatten = lambda l: [item for sublist in l for item in sublist]
+    labels = list(set(flatten([l.split(' ') for l in train['tags'].values])))
+    labels = np.array(labels)
+
     # Model architecture definition
     with tf.device('/gpu:0'):
-        model = get_amz_model(image_size=image_size, image_channels=image_channels)
+        model = vgg16_model(image_size=image_size, image_channels=image_channels)
 
     # Loss function and GD algorithm
     model.compile(loss=fun_loss,
@@ -181,8 +226,9 @@ if __name__ == '__main__':
 
     # X_train, X_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=validation_split_size) # TODO
 
-    # TODO: We can put this higher if we introduce data augmentation.
-    steps_per_epoch_train = int(len(train) / batch_size) + 1
+    #
+    steps_per_epoch_train = len(train) / batch_size
+    steps_per_epoch_train *= image_augment_multiplier
 
     # TODO: Use the history callback somehow
     # TODO: Poke around the early stopping parameters
@@ -198,7 +244,7 @@ if __name__ == '__main__':
                         )
 
     # Save model
-    model_path = 'test_model.h5'
+    model_path = 'vgg_3.h5'
     model.save(model_path)
 
     # Alternatively ..
@@ -206,24 +252,28 @@ if __name__ == '__main__':
 
     # Test model
 
-    steps_per_epoch_test = int(len(test) / batch_size) + 1
-
-    predictions = model.predict_generator(test_batch_generator(batch_size, image_size),
-                                          steps_per_epoch_test,
-                                          verbose=1)
-
+    batch_size_test = 64 # use 523 or 12 as nicest integer divisors of len(test)
+    steps_per_epoch_test = (len(test) / batch_size_test) + 1
+    predictions = model.predict_generator(test_batch_generator(batch_size_test, image_size), steps_per_epoch_test, verbose=1)
+		
     # p_valid = model.predict(X_valid)
     # fbeta_score(y_valid, np.array(p_valid) > 0.2, beta=2, average='samples')
     # info = (history.train_losses, history.val_losses, fbeta_score)
 
-
-
     prediction_classes = np.zeros_like(predictions)
-    prediction_classes[np.where(predictions>prediction_threshold)] = 1
+    prediction_classes[ np.where( predictions > prediction_threshold) ] = 1
 
-    outputs = oh_to_labs(prediction_classes, train, test)
+    predictions_df = pd.DataFrame(prediction_classes, columns=labels)
+    predictions_df.to_csv('predictions_onehot.csv', header=True)
 
-    outputs_df = pd.DataFrame(outputs)
-    outputs_df.to_csv('submission.csv', header=False, index=False)
+    print('------------------------------------------')
+    print('Percentage of images with tag in test set: ')
+    print(predictions_df.mean())
+    print('------------------------------------------')
+
+    submission_filename = 'current_submission.csv'
+    print('Writing submission file: %s' % submission_filename)
+    submission_df = predictions_to_submissions(prediction_classes, labels, test)
+    submission_df.to_csv(submission_filename, header=True, index=False)
 
 
