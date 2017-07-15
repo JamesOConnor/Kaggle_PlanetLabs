@@ -27,6 +27,8 @@ train_data_folder = "train-jpg"
 channel_mode = 1  # If channel mode == 2, 6 band images will be loaded TODO
 validation_split_size = 0.2
 batch_size = 128
+test_data_folder = 'test-jpg'
+additional_data_folder = 'test-jpg-additional'
 
 ### End config ###
 
