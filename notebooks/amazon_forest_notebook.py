@@ -61,7 +61,7 @@ for weather in ['clear', 'cloudy', 'haze', 'partly_cloudy']:
     filepath="%s_weights.best.hdf5"%weather
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True)
     train_losses, val_losses = [], []
-    epochs_arr = [2, 1, 1]
+    epochs_arr = [10, 5, 5]
     learn_rates = [0.001, 0.0001, 0.00001]
     for learn_rate, epochs in zip(learn_rates, epochs_arr):
         tmp_train_losses, tmp_val_losses, fbeta_score = classifier.train_model(x_current, y_current, learn_rate, epochs,
