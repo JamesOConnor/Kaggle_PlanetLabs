@@ -80,7 +80,8 @@ train_losses, val_losses = [], []
 epochs_arr = [15, 7, 7]
 learn_rates = [0.001, 0.0001, 0.00001]
 for learn_rate, epochs in zip(learn_rates, epochs_arr):
-    tmp_train_losses, tmp_val_losses, fbeta_score = weather_nn.train_model(weather_nn, y_train, learn_rate, epochs,
+    x_current = x_train[:, weather_labels]
+    tmp_train_losses, tmp_val_losses, fbeta_score = weather_nn.train_model(x_current, y_train, learn_rate, epochs,
                                                                            batch_size,
                                                                            validation_split_size=validation_split_size,
                                                                            train_callbacks=[checkpoint])
