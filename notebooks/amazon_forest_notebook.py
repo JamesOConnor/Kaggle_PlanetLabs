@@ -40,7 +40,6 @@ labels_set = set(labels_list)
 
 x_train, y_train, y_map = preprocess_train_data('%s/%s/'%(destination_path, train_data_folder), train_csv_file, img_resize)
 
-
 labels_df = pd.read_csv(train_csv_file)
 labels = sorted(set(chain.from_iterable([tags.split(" ") for tags in labels_df['tags'].values])))
 labels_map = {l: i for i, l in enumerate(labels)}
@@ -51,7 +50,6 @@ non_weather_labels = np.setdiff1d(range(17), weather_labels)
 y_weather = y_train[:,np.array(weather_labels)]
 
 weather_nn = build_classifier(4)
-
 
 for weather in ['clear', 'cloudy', 'haze', 'partly_cloudy']:
     classifier = build_classifier(13)
@@ -72,8 +70,6 @@ for weather in ['clear', 'cloudy', 'haze', 'partly_cloudy']:
         print(fbeta_score)
         train_losses += tmp_train_losses
         val_losses += tmp_val_losses
-
-
 
 # b = optimise_f2_thresholds(y_valid, classifier.predict(X_valid))
 filepath = "weather_weights.best.hdf5"
